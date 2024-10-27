@@ -11,14 +11,17 @@ AR = function(n,o){
     }
  x
 }
-RootFind = function(o1){
-  total_sum = 0
+RootFind = function(ar){
+  Upsum=0
+  Downsum=0
   for (i in 2:n) 
   {
-    total_sum = total_sum + 2 * (ar1[i] - o1 * ar1[i-1]) * (-ar1[i-1])
+  Upsum = Upsum + (ar[i-1] * ar[i]); 
+  Downsum = Downsum + (ar[i-1])^2    
   }
-  total_sum
+  root = Upsum/Downsum #Производная, приравненная к 0
 }
+
 ar1 = AR(n,o1)
 ar2 = AR(n,o2)
 ar3 = AR(n,o3)
@@ -28,6 +31,5 @@ plot(ar1, type = 'h', col="blue", xlab= "i")
 plot(ar2, type = 'h',col="red",xlab= "i")
 plot(ar3, type = 'h',xlab= "i")
 #LSM----
-result = uniroot(RootFind, interval = c(-10, 10),tol = 1e-10)
-root_value = result$root
+o1root = RootFind(ar1)
 #MaximumLikelihood
