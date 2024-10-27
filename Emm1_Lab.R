@@ -21,6 +21,15 @@ RootFind = function(ar){
   }
   root = Upsum/Downsum #Производная, приравненная к 0
 }
+SquareSum = function(ar, o) {
+  totalSum = 0 
+  for (i in 2:n)
+  {
+    totalSum = totalSum + (ar[i] - o * ar[i-1])^2
+  }
+  totalSum
+}
+
 
 ar1 = AR(n,o1)
 ar2 = AR(n,o2)
@@ -33,3 +42,10 @@ plot(ar3, type = 'h',xlab= "i")
 #LSM----
 o1root = RootFind(ar1)
 #MaximumLikelihood
+total = optimize(SquareSum, interval = c(-10, 10), ar = ar1)
+o1opt = total$minimum
+
+if (round(o1root,5)  == round(o1opt,5)) 
+{
+  print("its right")
+}
