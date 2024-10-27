@@ -49,3 +49,7 @@ if (round(o1root,5)  == round(o1opt,5))
 {
   print("its right")
 }
+
+#ModWithNewPar----
+n1 = 1000; o4 = 0.7
+ar4 = AR(n1,o4)
