@@ -47,8 +47,29 @@ PartialMNK = function(ar, n1) {
   }
   return(vecofMNK)
 }
-
-
+Ar2Generation = function(n, o1, o4) {
+  ar = numeric(n)
+  ar[1:2] = rnorm(2,0,1)
+  for (i in 3:n) {
+    ar[i] = o1 * ar[i-1] + o4 * ar[i-2] + rnorm(1,0,1)
+  }
+  return(ar)
+}
+checkStac = function(o1, o4) {
+  D = o1^2 - 4 * o4
+  if (D < 0) {
+    Lvalid = o1/2
+    Limaginary = sqrt(abs(D))/2
+    mod = sqrt(Lvalid^2 + Limaginary^2)
+    Stac = mod < 1
+  } else {
+    L1 = (-o1 + sqrt(D))/2  
+    L2 = (-o1 - sqrt(D))/2  
+    Stac = abs(L1) < 1 && abs(L2) < 1
+  }
+  return(Stac)
+}
+#GetStart----
 ar1 = AR(n,o1)
 ar2 = AR(n,o2)
 ar3 = AR(n,o3)
@@ -73,3 +94,12 @@ ar4 = AR(n1,o4)
 VMV = PartialMNK(ar4,n1)
 plot (VMV, type = 'h', col= "lightblue",xlab= "i")
 
+
+#AR(2)----
+ar5 = Ar2Generation(n1,o1,o4)
+if (checkStac(o1, o4)) {
+ print ("There is stationary")
+} else {
+print ("There isn't stationary)")
+}
+plot (ar5, type = 'h', col= "green",xlab= "i")
