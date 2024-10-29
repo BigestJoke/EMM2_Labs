@@ -103,3 +103,8 @@ if (checkStac(o1, o4)) {
 print ("There isn't stationary)")
 }
 plot (ar5, type = 'h', col= "green",xlab= "i")
+
+#6Task----
+library(stats)
+ArimaFunc = arima(ar5, order = c(2, 0, 0), include.mean = FALSE)
+ArimaFunc
