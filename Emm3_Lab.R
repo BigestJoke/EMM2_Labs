@@ -19,6 +19,21 @@ ARARCH = function(n){
   }
   return(list(variance = variance, x = x))
 }
+Forecasts = function(x,testN,thetaEst,ARCHest){
+  forecastX = numeric(testN)
+  forecastVariance = numeric(testN)
+  
+  for (i in 1:testN) {
+    newi = trainN + i
+    preVal = c(x[newi-1], x[newi-2])
+    forecastX[i] = sum(thetaEst * preVal)
+    forecastVariance[i] = sqrt(ARCHest[1] + 
+                          ARCHest[2] * x[newi-1]^2 + 
+                          ARCHest[3] * x[newi-2]^2 +
+                          ARCHest[4] * x[newi-3]^2)
+  }
+  return(list(forecastX = forecastX,forecastVariance = forecastVariance))
+}
 
 #ARARCH&Visualization----
 AArch = ARARCH(n)
@@ -55,5 +70,19 @@ cat("Оцененные параметры для ARCH(3):", ARCHest, "\n")
 Varest = fitted(ARCHMod)[,1]^2
 plot(Varest, type = "l", col = "red", main = "Оцененная дисперсия ARCH(3)",
      xlab = "t", ylab = "Дисперсия")
+
+
+#Forecasts&Visualization----
+Fcast = Forecasts(AArch$x,testN,thetaEst,ARCHest)
+upper = Fcast$forecastX + Fcast$forecastVariance
+lower = Fcast$forecastX - Fcast$forecastVariance
+
+plot(test, type = "l", col = "blue", main = "Прогноз на 1 шаг вперед",
+     xlab = "i", ylab = "value", 
+     ylim = range(c(lower, upper, test)))
+points(Fcast$forecastX, col = "black", pch = 20)
+lines(upper, col = "red")
+lines(lower, col = "red")
+
 
 
