@@ -26,3 +26,15 @@ ARARCH = function(n){
 AArch = ARARCH(n)
 plot(AArch$x, type = "l", col = "darkred", main = "Генерированный процесс AR(2)ARCH(3)",
      xlab = "Время", ylab = "Значение x")
+
+#Test&Train&Visualization
+trainN = floor(20/21 * n)
+testN = n - trainN
+
+train = AArch$x[1:trainN]
+test = AArch$x[(trainN + 1):n]
+
+plot(train, type = "l", col = "darkblue", main = "Обучающая выборка", 
+     xlab = "Время", ylab = "x_train")
+plot(test, type = "l", col = "black", main = "Тестовая выборка", 
+     xlab = "Время", ylab = "x_test")
