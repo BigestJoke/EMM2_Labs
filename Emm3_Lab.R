@@ -19,7 +19,7 @@ ARARCH = function(n){
   }
   return(list(variance = variance, x = x))
 }
-Forecasts = function(x,testN,thetaEst,ARCHest){
+Forecasts = function(x,trainN,testN,thetaEst,ARCHest){
   forecastX = numeric(testN)
   forecastVariance = numeric(testN)
   
@@ -71,7 +71,7 @@ plot(Varest, type = "l", col = "red", main = "Оцененная дисперс�
 
 
 #Forecasts&Visualization----
-Fcast = Forecasts(AArch$x,testN,thetaEst,ARCHest)
+Fcast = Forecasts(AArch$x,trainN,testN,thetaEst,ARCHest)
 upper = Fcast$forecastX + Fcast$forecastVariance
 lower = Fcast$forecastX - Fcast$forecastVariance
 
@@ -90,9 +90,40 @@ plot(data$X.TIME, data$X.CLOSE, type = "l", col = "red",
      main = "График динамики актива (CLOSE)", 
      xlab = "Время", ylab = "Цена закрытия")
 
-
-
 returnsLog = diff(log(data$X.CLOSE))
 plot(returnsLog, type = "l", col = "green", 
      main = "Доходность актива по Log Diff", 
      xlab = "Дата", ylab = "returnsLog")
+
+#FinanceARARCH----
+trainN2 = floor(20/21 * length(returnsLog))  
+testN2 = length(returnsLog) - trainN2
+
+train2 = returnsLog[1:trainN2]
+test2 = returnsLog[(trainN2 + 1):length(returnsLog)]
+
+
+ARest2 = arima(train2, order = c(2, 0, 0))
+thetaEst2 = coef(ARest2)[1:2]
+cat("Оцененные параметры для AR(2):", thetaEst2, "\n")
+
+ARresid2 = residuals(ARest2)
+
+ARCHMod2 = garch(ARresid2, order = c(0, 3))
+ARCHest2 = coef(ARCHMod2)
+cat("Оцененные параметры для ARCH(3):", ARCHest2, "\n")
+
+Varest2 = fitted(ARCHMod2)[,1]^2
+plot(Varest2, type = "l", col = "red", main = "Оцененная дисперсия ARCH(3)",
+     xlab = "Время", ylab = "Дисперсия")
+
+Fcast2 = Forecasts(returnsLog, trainN2, testN2, thetaEst2, ARCHest2)
+upper2 = Fcast2$forecastX + Fcast2$forecastVariance
+lower2 = Fcast2$forecastX - Fcast2$forecastVariance
+
+plot(test2, type = "l", col = "blue", main = "Прогноз на 1 шаг вперед",
+     xlab = "i", ylab = "Значение", ylim = range(c(lower2, upper2, test2)))
+points(Fcast2$forecastX, col = "black", pch = 20)
+lines(upper, col = "red")
+lines(lower, col = "red")
+
