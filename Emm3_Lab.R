@@ -27,10 +27,8 @@ Forecasts = function(x,testN,thetaEst,ARCHest){
     newi = trainN + i
     preVal = c(x[newi-1], x[newi-2])
     forecastX[i] = sum(thetaEst * preVal)
-    forecastVariance[i] = sqrt(ARCHest[1] + 
-                          ARCHest[2] * x[newi-1]^2 + 
-                          ARCHest[3] * x[newi-2]^2 +
-                          ARCHest[4] * x[newi-3]^2)
+    forecastVariance[i] = sqrt(ARCHest[1] + ARCHest[2] * x[newi-1]^2 + 
+                          ARCHest[3] * x[newi-2]^2 + ARCHest[4] * x[newi-3]^2)
   }
   return(list(forecastX = forecastX,forecastVariance = forecastVariance))
 }
@@ -85,4 +83,16 @@ lines(upper, col = "red")
 lines(lower, col = "red")
 
 
+#Finance----
+data = read.csv("GAZP.csv", sep = ";")
 
+plot(data$X.TIME, data$X.CLOSE, type = "l", col = "red", 
+     main = "График динамики актива (CLOSE)", 
+     xlab = "Время", ylab = "Цена закрытия")
+
+
+
+returnsLog = diff(log(data$X.CLOSE))
+plot(returnsLog, type = "l", col = "green", 
+     main = "Доходность актива по Log Diff", 
+     xlab = "Дата", ylab = "returnsLog")
