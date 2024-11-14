@@ -124,6 +124,8 @@ lower2 = Fcast2$forecastX - Fcast2$forecastVariance
 plot(test2, type = "l", col = "blue", main = "Прогноз на 1 шаг вперед",
      xlab = "i", ylab = "Значение", ylim = range(c(lower2, upper2, test2)))
 points(Fcast2$forecastX, col = "black", pch = 20)
-lines(upper, col = "red")
-lines(lower, col = "red")
+lines(upper2, col = "red")
+lines(lower2, col = "red")
+
+
 
