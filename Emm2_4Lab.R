@@ -1,4 +1,3 @@
-set.seed(123)
 #Variable&Function-Declaration
 rate = 0.01
 ib = 1
@@ -9,6 +8,13 @@ success = 0.8
 fail = -0.3
 pofsuccess = 0.4
 
+S0 <- 100
+K <- 100
+N <- 10
+a <- -0.3
+b <- 0.8
+r <- 0.2
+
 BnFunc = function(initial_balance, rate, per) {
   B = numeric(per + 1)
   B[1] = initial_balance
@@ -17,6 +23,7 @@ BnFunc = function(initial_balance, rate, per) {
   }
   return(B)
 }
+
 RhoGen = function(per, pofsuccess, success, fail) {
   rhos = numeric(n)
   for (i in 1:n) {
@@ -37,6 +44,29 @@ SnFunc = function(initial_price, rhos) {
   return(Sn)
 }
 
+BinomCoeff = function(n, k) {
+  choose(n, k)
+}
+BinomialSum = function(j, N, p) {
+  s = 0
+  for (k in j:N) {
+    s = s + BinomCoeff(N, k) * p^k * (1 - p)^(N - k)
+  }
+  return(s)
+}
+CalculateCallPrice = function(S0, K, N, a, b, r) {
+  p_ = (r - a) / (b - a)
+  p_s = ((1 + b) / (1 + r)) * p_
+  K0 = 1 + floor(log(K / (S0 * (1 + a)^N)) / log((1 + b) / (1 + a)))
+  
+  if (K0 <= N) {
+    price = S0 * BinomialSum(K0, N, p_s) - 
+      K * (1 + r)^(-N) * BinomialSum(K0, N, p_)
+  } else {
+    price = 0
+  }
+  return(price)
+}
 #Bn----
 Bn = BnFunc(ib, rate, n)
 plot(0:n, Bn, type = "l", col = "blue", lwd = 2,xlab = "n", ylab = "Bn",
@@ -44,14 +74,13 @@ plot(0:n, Bn, type = "l", col = "blue", lwd = 2,xlab = "n", ylab = "Bn",
 
 
 #Sn----
-# Генерация случайных доходностей и расчет последовательности
 RH = RhoGen(n, pofsuccess, success, fail)
 Sn = SnFunc(initp, RH)
-
-# Построение графика
-plot(0:n, Sn, type = "l", col = "red", lwd = 2,
-     xlab = "n", ylab = "Sn",
+plot(0:n, Sn, type = "l", col = "red", lwd = 2,xlab = "n", ylab = "Sn",
      main = "Sn с учетом случайных доходностей")
 
 
+#Call-Price----
+callPrice = CalculateCallPrice(S0, K, N, a, b, r)
+callPrice
 
