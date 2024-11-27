@@ -22,7 +22,7 @@ EnsemblePlot = function(n, delta, steps) {
           col = "blue", lty = 1)
   }
 }
-GeoBrSimulation = function(S0, sigma, delta, steps,B){
+GeoBrSimulation = function(S0,a, sigma, delta, steps,B){
   S = numeric(steps + 1)  
   S[1] = S0  # устанавливаем начальное значение
   
@@ -31,6 +31,17 @@ GeoBrSimulation = function(S0, sigma, delta, steps,B){
     S[i + 1] = S0 * exp((a - sigma^2 / 2) * (i * delta) + sigma * B[i + 1])  
   }
   return(S)
+}
+GeoEnsemblePlot = function(n, S0, a, sigma, delta, steps) {
+  plot(seq(0, steps * delta, by = delta), numeric(steps + 1), type = "n",
+       main = "Ансамбль реализаций геометрического броуновского движения",
+       xlab = "t", ylab = "S(t)", ylim = c(0, 2))
+  
+  for (i in 1:n) {
+    Brlz = BrownSimulate(delta, steps)  # Генерация броуновского движения
+    Srlz = GeoBrSimulation(S0, a, sigma, delta, steps, Brlz)  # Передаем его в GeoBrSimulation
+    lines(seq(0, steps * delta, by = delta), Srlz, col = "blue")
+  }
 }
 #BrSimulation----
 tp = seq(0, steps * delta, by = delta)
@@ -49,10 +60,13 @@ lines(tp, sigma, col = "red", lwd = 2, lty = 2)
 lines(tp, -sigma, col = "red", lwd = 2, lty = 2)
 
 #Geo-Br-Simulation----
-S = GeoBrSimulation(S0, sigma, delta, steps,B)
+S = GeoBrSimulation(S0,a, sigma, delta, steps,B)
 
+#Visualization
 plot(S, type = "l", col = "blue", xlab = "t", ylab = "S(t)", lwd = "1",
      main = "Геометрическое броуновское движение")
 
+#GeoBrEnsemble
+GeoEnsemblePlot(200, S0, a, sigma, delta, steps)
 
 
