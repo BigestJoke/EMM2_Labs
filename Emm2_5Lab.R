@@ -4,6 +4,10 @@ set.seed(123)
 delta = 0.0001
 steps = 1000
 
+S0 = 1
+a = 0.5
+sigma = 0.9
+
 BrownSimulate = function(delta, steps) {
   incr = rnorm(steps, mean = 0, sd = sqrt(delta))  
   B = c(0, cumsum(incr))  
@@ -18,7 +22,16 @@ EnsemblePlot = function(n, delta, steps) {
           col = "blue", lty = 1)
   }
 }
-
+GeoBrSimulation = function(S0, sigma, delta, steps,B){
+  S = numeric(steps + 1)  
+  S[1] = S0  # устанавливаем начальное значение
+  
+  for (i in 1:steps) {
+    # Используем значения броуновского движения из предыдущего кода
+    S[i + 1] = S0 * exp((a - sigma^2 / 2) * (i * delta) + sigma * B[i + 1])  
+  }
+  return(S)
+}
 #BrSimulation----
 tp = seq(0, steps * delta, by = delta)
 B = BrownSimulate(delta, steps)
@@ -34,6 +47,12 @@ EnsemblePlot(200, delta, steps)
 sigma = 3 * sqrt(tp)
 lines(tp, sigma, col = "red", lwd = 2, lty = 2)
 lines(tp, -sigma, col = "red", lwd = 2, lty = 2)
+
+#Geo-Br-Simulation----
+S = GeoBrSimulation(S0, sigma, delta, steps,B)
+
+plot(S, type = "l", col = "blue", xlab = "t", ylab = "S(t)", lwd = "1",
+     main = "Геометрическое броуновское движение")
 
 
 
