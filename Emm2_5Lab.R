@@ -1,5 +1,3 @@
-set.seed(123)  
-
 #Variable&Function-Declaration----
 delta = 0.0001
 steps = 1000
