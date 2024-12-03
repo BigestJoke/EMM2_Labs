@@ -1,5 +1,3 @@
-set.seed(123) 
-
 #variable&Function-Declaration----
 t = 50
 lyambda = 2
